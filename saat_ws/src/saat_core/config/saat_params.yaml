@@ -1,0 +1,210 @@
+# =============================================================================
+# SAAT System Parameters — saat_params.yaml
+# All hardware constants, thresholds, and PID gains are centralised here.
+# Every node reads these via the ROS2 parameter server at startup.
+# =============================================================================
+
+# ── Camera ─────────────────────────────────────────────────────────────────
+frame_capture_node:
+  ros__parameters:
+    frame_width:  1280
+    frame_height: 720
+    color_fps:    30          # Running at 30 Hz inside Docker (not native 90 Hz)
+    depth_fps:    30
+    publish_topic: "/raw_frame"
+    publish_depth_topic: "/raw_depth"
+
+# ── ROI definitions (x_start, y_start, x_end, y_end) ──────────────────────
+# Layout (as viewed from camera above the belt):
+#   | A1 | A2 | A3 |   ← top row
+#   | B1 | B2 | B3 |   ← bottom row
+# Full frame: 1280 × 720 px
+# Column split: 0–426 | 427–853 | 854–1280
+# Row split:    0–359  (top = A row) | 360–719 (bottom = B row)
+frame_divider_node:
+  ros__parameters:
+    rois:
+      A1: [0,   0,   427, 360]
+      A2: [427, 0,   854, 360]
+      A3: [854, 0,  1280, 360]
+      B1: [0,   360, 427, 720]
+      B2: [427, 360, 854, 720]
+      B3: [854, 360, 1280, 720]
+    roi_order: ["A1", "A2", "A3", "B1", "B2", "B3"]
+
+# ── Speed-zone column splits (Section 3 of report) ─────────────────────────
+frame_speed_divider_node:
+  ros__parameters:
+    conv1_col_start:  0
+    conv1_col_end:    256
+    vision_col_start: 257
+    vision_col_end:   1024
+    conv2_col_start:  1025
+    conv2_col_end:    1280
+
+# ── Vision algorithm thresholds ────────────────────────────────────────────
+# These are shared/broadcast by vision_init_node to all 6 vision nodes.
+vision_init_node:
+  ros__parameters:
+    # HSV bounds for pear body (green/yellow)
+    hsv_lower: [10, 40, 40]
+    hsv_upper: [95, 255, 255]
+    # LAB bounds for pear skin characteristics
+    lab_lower: [50, 120, 130]
+    lab_upper: [255, 150, 200]
+    # Maximum depth distance for depth mask (mm)
+    max_depth_mm: 380
+    # Infection detection: ratio above this → REJECTED
+    infection_ratio_threshold: 0.03
+    # Otsu scale factor for infection detection
+    otsu_scale: 0.75
+    # Morphological kernel size
+    morph_kernel_size: 3
+    # Minimum pear contour area (px²) to be considered valid
+    min_pear_area_px: 500
+    # CLAHE clip limit
+    clahe_clip_limit: 2.0
+    clahe_tile_size: [8, 8]
+    # Bilateral filter parameters
+    bilateral_d: 9
+    bilateral_sigma_color: 75
+    bilateral_sigma_space: 75
+
+# ── Per-zone vision nodes (all 6 share the same parameter schema) ───────────
+A1_vision: { ros__parameters: { zone_id: "A1" } }
+A2_vision: { ros__parameters: { zone_id: "A2" } }
+A3_vision: { ros__parameters: { zone_id: "A3" } }
+B1_vision: { ros__parameters: { zone_id: "B1" } }
+B2_vision: { ros__parameters: { zone_id: "B2" } }
+B3_vision: { ros__parameters: { zone_id: "B3" } }
+
+# ── Servo / Action nodes ───────────────────────────────────────────────────
+# PCA9685 channels: A1→0, A2→1, A3→2, B1→3, B2→4, B3→5
+# Angles: 0° = ACCEPT (pass-through), 90° = REJECT (eject)
+A1_action:
+  ros__parameters:
+    zone_id: "A1"
+    pca_channel: 0
+    accept_angle: 0.0
+    reject_angle: 90.0
+    return_delay_s: 0.4    # seconds before servo returns to accept position
+A2_action:
+  ros__parameters:
+    zone_id: "A2"
+    pca_channel: 1
+    accept_angle: 0.0
+    reject_angle: 90.0
+    return_delay_s: 0.4
+A3_action:
+  ros__parameters:
+    zone_id: "A3"
+    pca_channel: 2
+    accept_angle: 0.0
+    reject_angle: 90.0
+    return_delay_s: 0.4
+B1_action:
+  ros__parameters:
+    zone_id: "B1"
+    pca_channel: 3
+    accept_angle: 0.0
+    reject_angle: 90.0
+    return_delay_s: 0.4
+B2_action:
+  ros__parameters:
+    zone_id: "B2"
+    pca_channel: 4
+    accept_angle: 0.0
+    reject_angle: 90.0
+    return_delay_s: 0.4
+B3_action:
+  ros__parameters:
+    zone_id: "B3"
+    pca_channel: 5
+    accept_angle: 0.0
+    reject_angle: 90.0
+    return_delay_s: 0.4
+
+# ── Data collector nodes ───────────────────────────────────────────────────
+A1_data_collector: { ros__parameters: { zone_id: "A1" } }
+A2_data_collector: { ros__parameters: { zone_id: "A2" } }
+A3_data_collector: { ros__parameters: { zone_id: "A3" } }
+B1_data_collector: { ros__parameters: { zone_id: "B1" } }
+B2_data_collector: { ros__parameters: { zone_id: "B2" } }
+B3_data_collector: { ros__parameters: { zone_id: "B3" } }
+
+# ── Area nodes ────────────────────────────────────────────────────────────
+A1_area_node: { ros__parameters: { zone_id: "A1" } }
+A2_area_node: { ros__parameters: { zone_id: "A2" } }
+A3_area_node: { ros__parameters: { zone_id: "A3" } }
+B1_area_node: { ros__parameters: { zone_id: "B1" } }
+B2_area_node: { ros__parameters: { zone_id: "B2" } }
+B3_area_node: { ros__parameters: { zone_id: "B3" } }
+
+# ── Speed control ─────────────────────────────────────────────────────────
+main_speed_node:
+  ros__parameters:
+    # px-to-meter scale: empirically calibrated. 1 px ≈ 0.5 mm at 380 mm depth.
+    px_to_m: 0.0005
+    # frame rate used for speed computation
+    camera_fps: 30.0
+    # pear overflow threshold
+    max_pears: 6
+    # minimum pixel displacement per frame to count as "moving"
+    min_displacement_px: 5.0
+    # pixel-to-meter conversion for 3D (used when depth is available)
+    use_3d_speed: true
+
+conv1_speed_node:
+  ros__parameters:
+    belt_length_m: 1.75    # 175 cm
+    zone_id: "CONV1"
+
+conv2_speed_node:
+  ros__parameters:
+    belt_length_m: 1.15    # 115 cm
+    zone_id: "CONV2"
+
+speed_publisher_node:
+  ros__parameters:
+    # PWM hardware config (matches voltage_publisher.py)
+    gpio_pin_conv1: 11     # BOARD pin 11 → Conv1 PWM → LPF → PLC
+    gpio_pin_conv2: 13     # BOARD pin 13 → Conv2 PWM → LPF → PLC  (add 2nd LPF)
+    pwm_frequency:  500    # Hz — matches voltage_publisher.py
+    max_voltage:    3.3    # V
+    min_voltage:    0.1    # V (never true-zero to PLC)
+    # PID gains — tune these on the physical belt
+    kp_conv1: 1.0
+    ki_conv1: 0.1
+    kd_conv1: 0.05
+    kp_conv2: 1.0
+    ki_conv2: 0.1
+    kd_conv2: 0.05
+    kp_servo: 0.8
+    ki_servo: 0.05
+    kd_servo: 0.02
+    # Speed limits
+    max_speed_ms:   0.5    # m/s → 3.3 V
+    min_speed_ms:   0.0    # m/s → 0.1 V
+
+# ── Volume / Mass estimation ───────────────────────────────────────────────
+volume_estimation_node:
+  ros__parameters:
+    px_to_cm: 0.05         # 1 px ≈ 0.05 cm at operating depth (calibrate)
+
+mass_estimation_node:
+  ros__parameters:
+    pear_density_g_cm3: 0.96   # standard pear density
+
+# ── Database ─────────────────────────────────────────────────────────────
+data_collection_node:
+  ros__parameters:
+    db_path: "/saat_data/saat_records.db"
+    # Size classification thresholds (px²)
+    small_area_threshold_px: 15000
+
+# ── Web publisher ─────────────────────────────────────────────────────────
+webpage_publisher_node:
+  ros__parameters:
+    host: "0.0.0.0"
+    port: 8080
+    update_rate_hz: 0.1    # 1 update every 10 seconds (Section 13)
