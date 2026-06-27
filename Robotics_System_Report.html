@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Robotics System- Technical Report</title>
+<style>
+  :root {
+    --navy:   #0A1628;
+    --steel:  #1B2F4E;
+    --teal:   #00B4D8;
+    --teal2:  #0077A8;
+    --amber:  #FFB703;
+    --red:    #E63946;
+    --green:  #2DC653;
+    --bg:     #EFF4FA;
+    --card:   #FFFFFF;
+    --text:   #1A2535;
+    --muted:  #5A6A80;
+    --border: #C8D8EC;
+    --tag-bg: #E0EEF8;
+    --mono: 'Courier New', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    font-size: 15px;
+  }
+
+  /* ── COVER ───────────────────────────────────────────── */
+  .cover {
+    background: var(--navy);
+    color: #fff;
+    padding: 60px 48px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content:'';
+    position:absolute;
+    top:-80px; right:-80px;
+    width:380px; height:380px;
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(0,180,216,.25), transparent 70%);
+  }
+  .cover-tag {
+    display:inline-block;
+    background:var(--teal);
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    padding:4px 12px;
+    border-radius:4px;
+    margin-bottom:20px;
+  }
+  .cover h1 {
+    font-size:36px;
+    font-weight:800;
+    line-height:1.15;
+    max-width:680px;
+    margin-bottom:14px;
+    letter-spacing:-0.5px;
+  }
+  .cover h1 span { color: var(--teal); }
+  .cover-sub {
+    color:#8EAFC7;
+    font-size:15px;
+    max-width:580px;
+    margin-bottom:32px;
+  }
+  .cover-meta {
+    display:flex;
+    gap:32px;
+    flex-wrap:wrap;
+  }
+  .cover-meta-item label {
+    display:block;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    color:#8EAFC7;
+    margin-bottom:3px;
+  }
+  .cover-meta-item span {
+    font-size:14px;
+    font-weight:600;
+    color:#fff;
+  }
+
+  /* ── LAYOUT ──────────────────────────────────────────── */
+  .wrapper { max-width:960px; margin:0 auto; padding:40px 24px 80px; }
+  section { margin-bottom:52px; }
+
+  /* ── SECTION HEADING ─────────────────────────────────── */
+  .section-label {
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+    color:var(--teal2);
+    margin-bottom:8px;
+  }
+  .section-title {
+    font-size:24px;
+    font-weight:800;
+    color:var(--navy);
+    margin-bottom:6px;
+  }
+  .section-desc {
+    color:var(--muted);
+    font-size:14px;
+    margin-bottom:24px;
+    max-width:700px;
+  }
+  hr.div {
+    border:none;
+    border-top:2px solid var(--border);
+    margin-bottom:24px;
+  }
+
+  /* ── CARDS ───────────────────────────────────────────── */
+  .card {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:22px 24px;
+    margin-bottom:16px;
+  }
+  .card-title {
+    font-size:13px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--teal2);
+    margin-bottom:10px;
+  }
+  .card h3 {
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .card p { color:var(--muted); font-size:14px; }
+
+  .card-accent-teal  { border-left:4px solid var(--teal); }
+  .card-accent-amber { border-left:4px solid var(--amber); }
+  .card-accent-red   { border-left:4px solid var(--red); }
+  .card-accent-green { border-left:4px solid var(--green); }
+  .card-accent-navy  { border-left:4px solid var(--navy); }
+
+  /* ── GRID ────────────────────────────────────────────── */
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+  @media(max-width:700px){
+    .grid-2,.grid-3{grid-template-columns:1fr;}
+  }
+
+  /* ── BADGE / TAG ─────────────────────────────────────── */
+  .tag {
+    display:inline-block;
+    background:var(--tag-bg);
+    color:var(--teal2);
+    font-size:11px;
+    font-weight:700;
+    padding:2px 8px;
+    border-radius:4px;
+    margin:2px 2px 2px 0;
+    font-family:var(--mono);
+  }
+  .tag-amber {
+    background:#FFF3CD;
+    color:#A06000;
+  }
+  .tag-red {
+    background:#FFE5E7;
+    color:#B00020;
+  }
+  .tag-green {
+    background:#D4EDDA;
+    color:#155724;
+  }
+
+  /* ── STEPS ───────────────────────────────────────────── */
+  .steps { list-style:none; padding:0; }
+  .steps li {
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+    padding:12px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .steps li:last-child { border-bottom:none; }
+  .step-num {
+    flex-shrink:0;
+    width:28px; height:28px;
+    border-radius:50%;
+    background:var(--navy);
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .step-body strong { display:block; font-size:14px; color:var(--navy); margin-bottom:3px; }
+  .step-body span { font-size:13px; color:var(--muted); }
+
+  /* ── FLOW DIAGRAM ────────────────────────────────────── */
+  .flow {
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:0;
+    padding:18px;
+    background:#F5F9FE;
+    border:1px solid var(--border);
+    border-radius:8px;
+    margin-bottom:14px;
+  }
+  .flow-node {
+    background:var(--navy);
+    color:#fff;
+    font-size:12px;
+    font-weight:600;
+    padding:7px 13px;
+    border-radius:6px;
+    white-space:nowrap;
+    font-family:var(--mono);
+  }
+  .flow-node.teal  { background:var(--teal2); }
+  .flow-node.amber { background:#C87000; color:#fff; }
+  .flow-node.green { background:#1A8033; }
+  .flow-node.red   { background:#B0001A; }
+  .flow-node.gray  { background:#4A5568; }
+  .flow-arr {
+    font-size:20px;
+    color:var(--teal2);
+    padding:0 8px;
+    line-height:1;
+  }
+  .flow-arr.down { transform:rotate(90deg); display:inline-block; }
+
+  /* ── TABLE ───────────────────────────────────────────── */
+  .tbl {
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+  }
+  .tbl th {
+    background:var(--navy);
+    color:#fff;
+    text-align:left;
+    padding:10px 14px;
+    font-weight:600;
+    letter-spacing:.5px;
+  }
+  .tbl td {
+    padding:9px 14px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  .tbl tr:nth-child(even) td { background:#F5F9FE; }
+  .tbl td:first-child { font-family:var(--mono); color:var(--teal2); font-weight:600; font-size:12px; }
+
+  /* ── CALLOUT ─────────────────────────────────────────── */
+  .callout {
+    background:#FFF8E1;
+    border-left:5px solid var(--amber);
+    border-radius:6px;
+    padding:16px 20px;
+    margin-bottom:16px;
+    font-size:14px;
+  }
+  .callout.red {
+    background:#FFF0F1;
+    border-left-color:var(--red);
+  }
+  .callout.green {
+    background:#F0FFF4;
+    border-left-color:var(--green);
+  }
+  .callout strong { color:var(--navy); }
+
+  /* ── CODE ────────────────────────────────────────────── */
+  .code-block {
+    background:var(--navy);
+    color:#7DDCF5;
+    font-family:var(--mono);
+    font-size:13px;
+    padding:18px 22px;
+    border-radius:8px;
+    margin-bottom:14px;
+    white-space:pre;
+    overflow-x:auto;
+  }
+  .code-block .hl { color:#FFD166; }
+  .code-block .cm { color:#5A7A94; }
+  .code-block .gn { color:#06D6A0; }
+
+  /* ── ZONE GRID ───────────────────────────────────────── */
+  .zone-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:3px;
+    max-width:320px;
+    margin:0 auto;
+    border:2px solid var(--navy);
+    background:var(--navy);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .zone-cell {
+    background:#fff;
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column;
+    padding:20px 10px;
+    font-weight:700;
+    font-size:14px;
+    color:var(--navy);
+    min-height:80px;
+    position:relative;
+  }
+  .zone-cell.conv1 { background:#E0F0FF; }
+  .zone-cell.conv2 { background:#E6F4FF; }
+  .zone-cell::after {
+    content:'●';
+    font-size:22px;
+    color:var(--teal2);
+    opacity:.35;
+    margin-top:5px;
+  }
+  .zone-label {
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
+
+  /* ── FRAME STRIP ─────────────────────────────────────── */
+  .frame-strip {
+    display:flex;
+    width:100%;
+    height:60px;
+    border-radius:8px;
+    overflow:hidden;
+    border:2px solid var(--navy);
+    margin:14px 0;
+    position:relative;
+  }
+  .frame-zone {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    font-size:11px;
+    font-weight:700;
+    color:#fff;
+  }
+  .frame-zone span { font-size:9px; opacity:.8; margin-top:2px; }
+  .frame-zone.c1 { width:20%; background:#2563EB; }
+  .frame-zone.cv { width:60%; background:#0A1628; }
+  .frame-zone.c2 { width:20%; background:#0891B2; }
+
+  /* ── PIPELINE OVERVIEW ───────────────────────────────── */
+  .pipeline {
+    background:var(--navy);
+    border-radius:12px;
+    padding:28px;
+    color:#fff;
+  }
+  .pipeline-title {
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--teal);
+    margin-bottom:22px;
+  }
+  .pipe-row {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:10px;
+    flex-wrap:wrap;
+  }
+  .pipe-node {
+    background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.2);
+    border-radius:6px;
+    padding:7px 13px;
+    font-size:12px;
+    font-family:var(--mono);
+    white-space:nowrap;
+  }
+  .pipe-node.hl { background:var(--teal2); border-color:var(--teal); }
+  .pipe-node.amber-hl { background:#C87000; border-color:var(--amber); }
+  .pipe-arr { color:var(--teal); font-size:18px; }
+  .pipe-sub {
+    font-size:11px;
+    color:#7AABCC;
+    margin-left:4px;
+  }
+
+  /* ── IMPORTANCE SCALE ────────────────────────────────── */
+  .importance-bar {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:6px;
+  }
+  .importance-dots {
+    display:flex;
+    gap:4px;
+  }
+  .importance-dots span {
+    width:10px; height:10px;
+    border-radius:50%;
+  }
+  .importance-dots span.on  { background:var(--amber); }
+  .importance-dots span.off { background:var(--border); }
+  .importance-label { font-size:11px; color:var(--muted); font-weight:600; }
+
+  /* ── STICKY SECTION NAV ──────────────────────────────── */
+  .toc {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:20px 24px;
+    margin-bottom:40px;
+  }
+  .toc-title { font-weight:700; font-size:13px; color:var(--navy); margin-bottom:12px; }
+  .toc a {
+    display:inline-block;
+    font-size:12px;
+    color:var(--teal2);
+    text-decoration:none;
+    margin:3px 8px 3px 0;
+    padding:3px 8px;
+    background:var(--tag-bg);
+    border-radius:4px;
+  }
+  .toc a:hover { background:var(--teal2); color:#fff; }
+
+  /* ── IoT TABLE ───────────────────────────────────────── */
+  .iot-field {
+    display:grid;
+    grid-template-columns:30px 160px 1fr auto;
+    align-items:center;
+    gap:12px;
+    padding:10px 14px;
+    border-bottom:1px solid var(--border);
+    font-size:13px;
+  }
+  .iot-field:last-child { border-bottom:none; }
+  .iot-field:hover { background:#F5F9FE; }
+  .iot-num { font-weight:800; color:var(--muted); font-size:12px; }
+  .iot-name { font-family:var(--mono); font-weight:600; color:var(--navy); font-size:12px; }
+  .iot-desc { color:var(--muted); }
+  .iot-type { }
+
+  /* ── CRITICAL BOX ────────────────────────────────────── */
+  .critical {
+    background: linear-gradient(135deg, #0A1628, #1B2F4E);
+    color:#fff;
+    border-radius:12px;
+    padding:30px 28px;
+    margin-bottom:16px;
+    border:2px solid var(--red);
+  }
+  .critical-head {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  .critical-icon {
+    width:36px; height:36px;
+    background:var(--red);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px; flex-shrink:0;
+  }
+  .critical-head h3 { font-size:18px; font-weight:800; color:#fff; }
+  .critical ul { list-style:none; padding:0; }
+  .critical ul li {
+    padding:8px 0;
+    border-bottom:1px solid rgba(255,255,255,.1);
+    font-size:14px;
+    color:#B0C8E0;
+    display:flex; gap:10px; align-items:flex-start;
+  }
+  .critical ul li:last-child { border-bottom:none; }
+  .critical ul li::before { content:'▶'; color:var(--red); flex-shrink:0; margin-top:2px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════ COVER ══════════ -->
+<div class="cover">
+  <div class="cover-tag">Technical System Report</div>
+  <h1>Pear Inspection &amp; Sorting<br/><span>Robotics System</span></h1>
+  <p class="cover-sub">A complete description of all ROS2 nodes, topics, algorithms, data flows, and IoT integrations- from minor implementation details to the full system architecture.</p>
+  <div class="cover-meta">
+    <div class="cover-meta-item"><label>Platform</label><span>Jetson Nano (ROS2)</span></div>
+    <div class="cover-meta-item"><label>Vision</label><span>RGB-D Camera · Classical CV</span></div>
+    <div class="cover-meta-item"><label>Conveyors</label><span>Conv1 (175 cm) + Conv2 (115 cm) + Servo</span></div>
+    <div class="cover-meta-item"><label>Output</label><span>PLC (0–3.3 V PWM) · IoT · Local DB</span></div>
+  </div>
+</div>
+
+<!-- ══════════ WRAPPER ══════════ -->
+<div class="wrapper">
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <div class="toc-title">Jump to Section</div>
+    <a href="#s1">1 · Hardware</a>
+    <a href="#s2">2 · Camera Specs</a>
+    <a href="#s3">3 · Frame Layout</a>
+    <a href="#s4">4 · Zone Grid</a>
+    <a href="#s5">5 · Speed Formulas</a>
+    <a href="#s6">6 · PWM → Voltage</a>
+    <a href="#s7">7 · Conv Speed Methods</a>
+    <a href="#s8">8 · Vision Algorithm</a>
+    <a href="#s9">9 · PID Speed Control</a>
+    <a href="#s10">10 · Ref Speed Algorithm</a>
+    <a href="#s11">11 · ROS2 Nodes</a>
+    <a href="#s12">12 · All Topics</a>
+    <a href="#s13">13 · IoT Schema</a>
+    <a href="#s14">14 · Database</a>
+    <a href="#s15">15 · Web Pages</a>
+    <a href="#s16">16 · Full System Pipeline</a>
+    <a href="#s17">17 · Critical Notes</a>
+  </div>
+
+  <!-- ══ SECTION 1 ══ -->
+  <section id="s1">
+    <div class="section-label">Section 01 · Minor Details</div>
+    <div class="section-title">Hardware Components</div>
+    <p class="section-desc">Physical devices that form the foundation of the system.</p>
+    <hr class="div"/>
+
+    <div class="importance-bar">
+      <div class="importance-dots">
+        <span class="on"></span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span>
+      </div>
+      <span class="importance-label">Importance Level 1/5</span>
+    </div>
+
+    <div class="grid-3">
+      <div class="card card-accent-teal">
+        <div class="card-title">Compute Unit</div>
+        <h3>NVIDIA Jetson Nano</h3>
+        <p>Runs all ROS2 nodes. Connected to internet for IoT publishing. Outputs PWM signals through Low Pass Filters to the PLC.</p>
+      </div>
+      <div class="card card-accent-teal">
+        <div class="card-title">Vision Sensor</div>
+        <h3>RGB-D Camera</h3>
+        <p>Attached to Jetson Nano. Provides both RGB (color) and Depth streams. Used for pear inspection and speed estimation.</p>
+      </div>
+      <div class="card card-accent-teal">
+        <div class="card-title">Motor Controller</div>
+        <h3>PLC</h3>
+        <p>Receives 0–3.3 V analog voltage (converted from PWM by a Low Pass Filter) to control conveyor and servo motor speeds.</p>
+      </div>
+      <div class="card card-accent-amber">
+        <div class="card-title">Conveyor 1 (Conv1)</div>
+        <h3>Belt- 175 cm</h3>
+        <p>Left/incoming belt. Speed measured by counting encoder pulses (line crossings), then multiplying by belt length (175 cm).</p>
+      </div>
+      <div class="card card-accent-amber">
+        <div class="card-title">Conveyor 2 (Conv2)</div>
+        <h3>Belt- 115 cm</h3>
+        <p>Right/outgoing belt. Same speed measurement method as Conv1 but length is 115 cm.</p>
+      </div>
+      <div class="card card-accent-navy">
+        <div class="card-title">Physical Actuator</div>
+        <h3>Servo / Sorter</h3>
+        <p>Activated by A1–B3 Action nodes to physically move (reject or pass) each pear based on vision analysis result.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SECTION 2 ══ -->
+  <section id="s2">
+    <div class="section-label">Section 02 · Minor Details</div>
+    <div class="section-title">Camera Specifications</div>
+    <p class="section-desc">The camera operates in two independent modes simultaneously, providing both color and depth data.</p>
+    <hr class="div"/>
+
+    <div class="importance-bar">
+      <div class="importance-dots">
+        <span class="on"></span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span>
+      </div>
+      <span class="importance-label">Importance Level 1/5</span>
+    </div>
+
+    <div class="grid-2">
+      <div class="card card-accent-teal">
+        <div class="card-title">Mode 1- Color</div>
+        <h3>RGB Stream</h3>
+        <p><strong>Resolution:</strong> 1280 × 800 px<br/>
+           <strong>Frame Rate:</strong> 90 Hz<br/>
+           <strong>Use:</strong> Infection detection, color analysis, pear tracking</p>
+      </div>
+      <div class="card card-accent-navy">
+        <div class="card-title">Mode 2- Depth</div>
+        <h3>Depth Stream</h3>
+        <p><strong>Resolution:</strong> 1280 × 800 px<br/>
+           <strong>Frame Rate:</strong> 60 Hz<br/>
+           <strong>Use:</strong> Volume and mass estimation of each pear</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SECTION 3 ══ -->
+  <section id="s3">
+    <div class="section-label">Section 03 · Minor Details</div>
+    <div class="section-title">Frame Pixel Layout- Column Zones</div>
+    <p class="section-desc">Each camera frame (1280 × 800 px) is horizontally divided into three regions. Different ROS2 nodes process different columns.</p>
+    <hr class="div"/>
+
+    <div class="importance-bar">
+      <div class="importance-dots">
+        <span class="on"></span><span class="on"></span><span class="off"></span><span class="off"></span><span class="off"></span>
+      </div>
+      <span class="importance-label">Importance Level 2/5</span>
+    </div>
+
+    <div class="frame-strip">
+      <div class="frame-zone c1">CONV1<span>cols 0–256</span></div>
+      <div class="frame-zone cv">VISION (Central)<span>cols 257–1024  ·  768 px wide</span></div>
+      <div class="frame-zone c2">CONV2<span>cols 1025–1280</span></div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card card-accent-teal">
+        <div class="card-title">Conv1 Zone</div>
+        <h3>Columns 0 – 256</h3>
+        <p>256 px wide. Used by Conv1 speed nodes. Monitors the left side of the belt entering the vision area.</p>
+      </div>
+      <div class="card card-accent-navy">
+        <div class="card-title">Vision Zone</div>
+        <h3>Columns 257 – 1024</h3>
+        <p>768 px wide (central area). Used for pear inspection: infection detection, area analysis, centroid tracking, speed estimation.</p>
+      </div>
+      <div class="card card-accent-teal">
+        <div class="card-title">Conv2 Zone</div>
+        <h3>Columns 1025 – 1280</h3>
+        <p>256 px wide. Used by Conv2 speed nodes. Monitors the right side of the belt exiting the inspection zone.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SECTION 4 ══ -->
+  <section id="s4">
+    <div class="section-label">Section 04 · Minor Details</div>
+    <div class="section-title">Physical Belt Zone Layout (A1–B3 Grid)</div>
+    <p class="section-desc">The conveyor belt is divided into 6 inspection zones across 2 columns (A and B) and 3 rows, each observed by a dedicated camera zone.</p>
+    <hr class="div"/>
+
+    <div class="importance-bar">
+      <div class="importance-dots">
+        <span class="on"></span><span class="on"></span><span class="off"></span><span class="off"></span><span class="off"></span>
+      </div>
+      <span class="importance-label">Importance Level 2/5</span>
+    </div>
+
+    <div style="display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start;">
+      <div>
+        <div class="zone-grid">
+          <div class="zone-cell conv1"><div class="zone-label">Row 1</div>A1</div>
+          <div class="zone-cell conv2"><div class="zone-label">Row 1</div>B1</div>
+          <div class="zone-cell conv1"><div class="zone-label">Row 2</div>A2</div>
+          <div class="zone-cell conv2"><div class="zone-label">Row 2</div>B2</div>
+          <div class="zone-cell conv1"><div class="zone-label">Row 3</div>A3</div>
+          <div class="zone-cell conv2"><div class="zone-label">Row 3</div>B3</div>
+        </div>
+        <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:8px;">← Col A (left lane) · Col B (right lane) →</p>
+      </div>
+      <div style="flex:1; min-width:240px;">
+        <p style="margin-bottom:12px; font-size:14px; color:var(--muted);">Each zone is independently processed by its own ROS2 analysis node. Pears passing through zone A1 are handled by <span class="tag">A1_Frame_Analysis</span>, zone B3 by <span class="tag">B3_Frame_Analysis</span>, and so on.</p>
+        <div class="callout">
+          <strong>Timing note:</strong> Time markers <span class="tag">t₁</span> and <span class="tag">t₂</span> represent the timestamps when a pear enters and exits a row. This is used by the reference speed algorithm to compute per-pear velocity.
+        </div>
+        <div class="card card-accent-teal" style="margin-top:8px;">
+          <div class="card-title">Frame Array Structure</div>
+          <p>The system maintains <strong>6 arrays with 3 layers</strong>:<br/>
+          <span class="tag">A1</span><span class="tag">A2</span><span class="tag">A3</span><span class="tag">B1</span><span class="tag">B2</span><span class="tag">B3</span><br/>
+          Each array stores OGR (object geometry/result) + Distance data.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SECTION 5 ══ -->
+  <section id="s5">
+    <div class="section-label">Section 05 · Minor Details</div>
+    <div class="section-title">Speed Conversion Formulas (m/s → Voltage → RPM)</div>
+    <p class="section-desc">The Jetson Nano outputs a linear voltage (LV) that maps to a physical speed. The PLC then converts this to motor RPM.</p>
+    <hr class="div"/>
+
+    <div class="importance-bar">
+      <div class="importance-dots">
+        <span class="on"></span><span class="on"></span><span class="off"></span><span class="off"></span><span class="off"></span>
+      </div>
+      <span class="importance-label">Importance Level 2/5</span>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="code-block"><span class="cm">/* Speed mapping table */</span>
+
+<span class="hl">m/s</span>   →  <span class="hl">Voltage (V)</span>  →  <span class="hl">RPM (0–75)</span>
+ 0.0  →     0.1 V      →    0 RPM
+ 0.5  →     3.3 V      →   75 RPM
+
+<span class="cm">/* When LV = 0 */</span>
+<span class="gn">V = 0.1 V</span>  →  <span class="gn">R = 0 RPM</span>
+
+<span class="cm">/* Conv relationship */</span>
+Conv₂ = LV
+Conv₁ = 3.3 − Conv₂   <span class="cm">// always sum to 3.3</span></div>
+      </div>
+      <div>
+        <div class="card card-accent-amber">
+          <div class="card-title">Key Rule</div>
+          <h3>Conv1 + Conv2 = 3.3 V (always)</h3>
+          <p>The two conveyor speeds are complementary. When Conv2 is fast (busy), Conv1 slows down- and vice versa. This balances the pear flow between belts.</p>
+        </div>
+        <div class="card card-accent-teal" style="margin-top:12px;">
+          <div class="card-title">Idle State</div>
+          <h3>Minimum voltage = 0.1 V</h3>
+          <p>Even at 0 m/s, the system sends 0.1 V (not 0 V) to prevent the PLC from interpreting a dead signal as a fault. True zero speed = RPM 0 but V = 0.1.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SECTION 6 ══ -->
+  <section id="s6">
+    <div class="section-label">Section 06 · Minor Details</div>
+    <div class="section-title">PWM → Voltage Conversion (Low Pass Filter)</div>
+    <p class="section-desc">The Jetson Nano cannot output true analog voltages directly. It outputs PWM (Pulse Width Modulation) signals that are smoothed into analog voltages by hardware Low Pass Filters before reaching the PLC.</p>
+    <hr class="div"/>
+
+    <div class="importance-bar">
+      <div class="importance-dots">
+        <span class="on"></span><span class="on"></span><span class="off"></span><span class="off"></span><span class="off"></span>
+      </div>
+      <span class="importance-label">Importance Level 2/5</span>
+    </div>
+
+    <div class="flow">
+      <div class="flow-node">Jetson Nano</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-node amber">PWM Signal</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-node teal">Low Pass Filter</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-node green">Analog Voltage (0–3.3 V)</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-node">PLC</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card card-accent-navy">
+        <div class="card-title">LF for Conv1</div>
+        <h3>Low Pass Filter- "Conv1"</h3>
+        <p>Smooths the PWM output for Conveyor 1. Converts digital duty cycle into a clean 0–3.3 V analog signal.</p>
+      </div>
+      <div class="card card-accent-navy">
+        <div class="card-title">LF for Conv2</div>
+        <h3>Low Pass Filter- "Conv2"</h3>
+        <p>Smooths the PWM output for Conveyor 2. Same circuit, separate channel for the second belt.</p>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Speed publisher example:</strong> When Reference = 37.5 RPM → V = 1.65 V → LV = 0.25. The error voltage is sent as PWM → LPF → PLC for both conveyors.
+    </div>
+  </section>
+
+  <!-- ══ SECTION 7 ══ -->
+  <section id="s7">
+    <div class="section-label">Section 07 · Supporting Details</div>
+    <div class="section-title">Conveyor Speed Measurement Methods</div>
+    <p class="section-desc">Conv1 and Conv2 compute their belt speeds independently using encoder/line-counting logic. Servo speed is measured directly from system feedback.</p>
+    <hr class="div"/>
+
+    <div class="importance-bar">
+      <div class="importance-dots">
+        <span class="on"></span><span class="on"></span><span class="on"></span><span class="off"></span><span class="off"></span>
+      </div>
+      <span class="importance-label">Importance Level 3/5</span>
+    </div>
+
+    <div class="grid-3">
+      <div class="card card-accent-teal">
+        <div class="card-title">Conv1_Speed Node</div>
+        <h3>Belt 1- 175 cm</h3>
+        <ol style="padding-left:18px; font-size:13px; color:var(--muted); margin-top:8px;">
+          <li>Count how many turns "a placed line at the conveyor" makes</li>
+          <li>Get the time for each full cycle</li>
+          <li>Multiply cycle count × 175 cm = distance</li>
+          <li>Distance ÷ time = speed</li>
+        </ol>
+      </div>
+      <div class="card card-accent-teal">
+        <div class="card-title">Conv2_Speed Node</div>
+        <h3>Belt 2- 115 cm</h3>
+        <ol style="padding-left:18px; font-size:13px; color:var(--muted); margin-top:8px;">
+          <li>Same counting method as Conv1</li>
+          <li>Get the time for each full cycle</li>
+          <li>Multiply cycle count × 115 cm = distance</li>
+          <li>Distance ÷ time = speed</li>
+        </ol>
+      </div>
+      <div class="card card-accent-amber">
+        <div class="card-title">Servo_Speed Node</div>
+        <h3>Direct Measurement</h3>
+        <p style="font-size:13px; color:var(--muted); margin-top:8px;">Measures the actual system speed directly from the servo motor feedback. Used as the real-time feedback signal into the PID speed controller.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SECTION 8 ══ -->
+  <section id="s8">
+    <div class="section-label">Section 08 · Core Algorithm</div>
+    <div class="section-title">Vision Algorithm- 9-Step Pipeline</div>
+    <p class="section-desc">Classical computer vision processing chain applied to each camera frame to detect infections on pears, extract location and color, and segment the pear from the background.</p>
+    <hr class="div"/>
+
+    <div class="importance-bar">
+      <div class="importance-dots">
+        <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="off"></span>
+      </div>
+      <span class="importance-label">Importance Level 4/5</span>
+    </div>
+
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:20px;">
+      <div class="flow-node gray">Raw Frame</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-node teal">9-Step Pipeline</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-node amber">Clean Pear + Infection</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-node red">Infection Mask Only</div>
+    </div>
+
+    <ul class="steps">
+      <li>
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>CLAHE- Adaptive Histogram Equalization</strong>
+          <span>Contrast Limited Adaptive Histogram Equalization. Enhances local contrast in different regions of the image independently, making subtle infection patterns more visible even in non-uniform lighting conditions on the belt.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Bilateral Filter</strong>
+          <span>Edge-preserving noise smoothing filter. Removes sensor noise and fine texture without blurring the sharp boundaries between healthy and infected pear tissue. Unlike Gaussian blur, it keeps object edges sharp.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Color Space Conversion</strong>
+          <span>Converts the frame from BGR (camera native) to an appropriate color space (likely HSV or LAB) to make color-based segmentation robust to brightness variation on the conveyor.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong>Find the Color Range</strong>
+          <span>Determines the HSV or color range thresholds for both healthy pear skin and infected tissue. This step isolates the specific RGB/HSV color range that corresponds to pear infections (brown spots, discoloration).</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <strong>Bitwise AND (Mask Application)</strong>
+          <span>Applies the color mask to the image using a bitwise AND operation. Only pixels that fall within the defined color range are kept; everything else is zeroed out, isolating the candidate infection regions.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <strong>Morphological Cleanup- Opening &amp; Closing</strong>
+          <span>Opening (erosion → dilation) removes small noise blobs. Closing (dilation → erosion) fills small holes inside infection regions. Together they produce clean, solid infection masks without false positives.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">7</div>
+        <div class="step-body">
+          <strong>Otsu's Thresholding</strong>
+          <span>Automatic global thresholding that finds the optimal binary cutoff value by analyzing the image histogram. Converts the grayscale mask into a clean binary (black/white) image. No manual threshold tuning required.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">8</div>
+        <div class="step-body">
+          <strong>Contour Analysis</strong>
+          <span>Finds and analyzes the outer boundaries of all white regions in the binary mask. Each contour corresponds to one infection region. Used to extract: bounding rectangle (location), contour area (infection area), and centroid coordinates.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">9</div>
+        <div class="step-body">
+          <strong>Outputs</strong>
+          <span>Final results published to downstream nodes: infection area (pixels²), infection location (x, y centroid), infection RGB color code, binary status (infected / clean), and action trigger for the actuator node.</span>
+        </div>
+      </li>
+    </ul>
+
+    <div class="callout green" style="margin-top:16px;">
+      <strong>Background removal:</strong> The pipeline also produces a clean "pear-only" image by removing the conveyor belt background- giving downstream nodes a clean pear silhouette for accurate area and volume estimation.
+    </div>
+  </section>
+
+  <!-- ══ SECTION 9 ══ -->
+  <section id="s9">
+    <div class="section-label">Section 09 · Core Algorithm</div>
+    <div class="section-title">Speed Algorithm- PID Control Loop</div>
+    <p class="section-desc">A PID (Proportional-Integral-Derivative) controller manages each conveyor and the servo motor speed. Three parallel PID loops maintain precise speed control.</p>
+    <hr class="div"/>
+
+    <div class="importance-bar">
+      <div class="importance-dots">
+        <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="off"></span>
+      </div>
+      <span class="importance-label">Importance Level 4/5</span>
+    </div>
+
+    <div class="code-block"><span class="cm">/* PID Control Structure */</span>
+
+Frames ──► Model ──►[Σ]──► Controller "PID" ──► Conv1_model ──► S₁ ──► RPM
+                    ▲                                                       |
+Reference ──────────┘          Model ◄──── Conv1_Frame ◄──────────────────┘
+
+              [Σ] ──► PID ──► Conv2_model ──► S₂
+                ▲                                |
+                └──── Model ◄── Conv2_Frame ◄───┘
+
+              [Σ] ──► PID ──► Servo_model ──► SV
+                ▲                                |
+                └──── Model ◄── from_Servo ◄────┘</div>
+
+    <div class="grid-3">
+      <div class="card card-accent-teal">
+        <div class="card-title">PID Loop 1</div>
+        <h3>Conv1 Speed</h3>
+        <p>Controls Conveyor 1 speed. Setpoint from Reference speed. Feedback from Conv1_Frame pixel analysis. Output → S₁ (RPM command)</p>
+      </div>
+      <div class="card card-accent-teal">
+        <div class="card-title">PID Loop 2</div>
+        <h3>Conv2 Speed</h3>
+        <p>Controls Conveyor 2 speed. Complementary to Conv1 (Conv1 + Conv2 = 3.3 V). Feedback from Conv2_Frame. Output → S₂ (RPM command)</p>
+      </div>
+      <div class="card card-accent-amber">
+        <div class="card-title">PID Loop 3</div>
+        <h3>Servo Speed</h3>
+        <p>Controls the servo/ejection mechanism. Feedback from servo encoder. Output → SV (servo voltage command). Also receives reference speed signal.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Speed publisher logic:</strong> Takes current speed from <span class="tag">servo_speed</span> → compares with Reference → computes error → sends Conv1 as PWM (error voltage). When Conv1 = error: Conv2 = 3.3 − Conv1.
+    </div>
+  </section>
+
+  <!-- ══ SECTION 10 ══ -->
+  <section id="s10">
+    <div class="section-label">Section 10 · Core Algorithm</div>
+    <div class="section-title">Reference Speed Algorithm</div>
+    <p class="section-desc">Computes the optimal belt reference speed dynamically by tracking pear centroids across the vision zone. The result feeds into the PID controller as the setpoint.</p>
+    <hr class="div"/>
+
+    <div class="importance-bar">
+      <div class="importance-dots">
+        <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="off"></span>
+      </div>
+      <span class="importance-label">Importance Level 4/5</span>
+    </div>
+
+    <ul class="steps">
+      <li>
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Find the pears</strong>
+          <span>Detect all pears currently in the vision zone frame using the vision pipeline output.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Check pear count</strong>
+          <span>If more than 6 pears detected simultaneously → system is at maximum capacity: set Conv1 → 0, Conv2 → 3.3 (full throughput mode). This prevents belt overloading.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Find centroids</strong>
+          <span>For each pear, compute its centroid (geometric center x,y pixel coordinate) from the contour analysis output.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong>Track centroid over time</strong>
+          <span>Record centroid position at timestep t₁ and again at t₂. Store {time, location} pairs to compute displacement over time.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <strong>Compute per-pear speed</strong>
+          <span>Speed = pixel displacement ÷ elapsed time. Convert pixels/second to m/s using the known camera-to-belt mapping. One speed value per pear per row.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <strong>Average speed (if pears only moving)</strong>
+          <span>Average Speed = (S₁ + S₂ + … + Sₙ) / n. Only moving pears are included. Stationary pears (e.g., jamming) are excluded from the average.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">7</div>
+        <div class="step-body">
+          <strong>Publish speed</strong>
+          <span>Publishes the computed reference speed to the <span class="tag">/main_speed</span> topic. This becomes the setpoint for all three PID loops.</span>
+        </div>
+      </li>
+    </ul>
+
+    <div class="grid-2" style="margin-top:16px;">
+      <div class="card card-accent-red">
+        <div class="card-title">Belt EMPTY state</div>
+        <h3>Conv1 → 3.3 V · Conv2 → 0 V</h3>
+        <p>When no pears detected: Conv1 runs at full speed to pull in new pears, Conv2 is idle.</p>
+      </div>
+      <div class="card card-accent-amber">
+        <div class="card-title">Belt CROWDED state (&gt;6 pears)</div>
+        <h3>Conv1 → 0 V · Conv2 → 3.3 V</h3>
+        <p>When belt is over-full: Conv1 stops accepting more, Conv2 runs at full to clear the queue.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SECTION 11 ══ -->
+  <section id="s11">
+    <div class="section-label">Section 11 · Node Reference</div>
+    <div class="section-title">All ROS2 Nodes- Descriptions</div>
+    <p class="section-desc">Complete catalogue of every node in the system, what it subscribes to, what it publishes, and what it does internally.</p>
+    <hr class="div"/>
+
+    <div class="importance-bar">
+      <div class="importance-dots">
+        <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="off"></span>
+      </div>
+      <span class="importance-label">Importance Level 4/5</span>
+    </div>
+
+    <!-- Capture -->
+    <div class="card card-accent-teal" style="margin-bottom:14px;">
+      <div class="card-title">Node · Capture Layer</div>
+      <h3><span class="tag">frame_capture</span></h3>
+      <p>The entry point. Receives raw frames directly from the camera. Distributes frames to three downstream divider nodes: <span class="tag">frame_divider</span>, <span class="tag">frame_speed_divider</span>, and <span class="tag">volume_divider</span>. Acts as the main frame broadcaster- every other node depends on it.</p>
+    </div>
+
+    <!-- Dividers -->
+    <div class="grid-3">
+      <div class="card card-accent-navy">
+        <div class="card-title">Node · Frame Routing</div>
+        <h3><span class="tag">frame_divider</span></h3>
+        <p>Splits the incoming frame into 6 sub-frames (A1–B3) and sends each to its corresponding analysis node. Also outputs Conv1, Conv2, and Servo speed sub-frames.</p>
+      </div>
+      <div class="card card-accent-navy">
+        <div class="card-title">Node · Frame Routing</div>
+        <h3><span class="tag">frame_speed_divider</span></h3>
+        <p>Extracts Conv1 (cols 0–256), Vision (cols 257–1024), and Conv2 (cols 1025–1280) sub-frames for the speed computation pipeline.</p>
+      </div>
+      <div class="card card-accent-navy">
+        <div class="card-title">Node · Volume/Mass</div>
+        <h3><span class="tag">volume_divider</span></h3>
+        <p>Routes depth frames to the area estimation nodes (A1…B3 Area nodes) for 3D volume and mass computation per pear.</p>
+      </div>
+    </div>
+
+    <!-- Init -->
+    <div class="card card-accent-amber" style="margin:14px 0;">
+      <div class="card-title">Node · Initialization</div>
+      <h3><span class="tag">classical_vision_initialization</span></h3>
+      <p>Runs once at system startup. Loads and broadcasts all system parameters (color thresholds, calibration values, filter settings) to the 6 vision nodes. Acts as the configuration hub.</p>
+    </div>
+
+    <!-- Vision nodes -->
+    <div class="card card-accent-teal">
+      <div class="card-title">Nodes · Vision Analysis × 6</div>
+      <h3><span class="tag">A1_vision</span> <span class="tag">A2_vision</span> <span class="tag">A3_vision</span> <span class="tag">B1_vision</span> <span class="tag">B2_vision</span> <span class="tag">B3_vision</span></h3>
+      <p>Six parallel nodes, one per belt zone. Each runs the 9-step vision algorithm on its sub-frame. Outputs: infection detection result (location, area, color, status, action flag) published to the corresponding action and data-collector nodes.</p>
+    </div>
+
+    <!-- Action nodes -->
+    <div class="card card-accent-red" style="margin:14px 0;">
+      <div class="card-title">Nodes · Physical Actuation × 6</div>
+      <h3><span class="tag">A1_action</span> through <span class="tag">B3_action</span></h3>
+      <p>Each action node:<br/>
+      1. Gets the detection result from its paired vision node.<br/>
+      2. Commands the physical actuator (ejector/sorter) to accept or reject the pear.<br/>
+      Action nodes are the only nodes that directly trigger physical hardware movement.</p>
+    </div>
+
+    <!-- Data collector -->
+    <div class="card card-accent-teal">
+      <div class="card-title">Nodes · Data Collection × 6</div>
+      <h3><span class="tag">A1_data_collector</span> through <span class="tag">B3_data_collector</span></h3>
+      <p>One per zone. Performs 6 tasks:<br/>
+      <strong>1.</strong> Generate unique Pear ID (e.g., A1_00001)<br/>
+      <strong>2.</strong> Retrieve infection color<br/>
+      <strong>3.</strong> Retrieve infection area<br/>
+      <strong>4.</strong> Retrieve infection location<br/>
+      <strong>5.</strong> Compute pear surface area<br/>
+      <strong>6.</strong> Send all data to the database node</p>
+    </div>
+
+    <!-- Infection description -->
+    <div class="card card-accent-amber" style="margin:14px 0;">
+      <div class="card-title">Node · Infection Summary</div>
+      <h3><span class="tag">infection_description</span></h3>
+      <p>Aggregates infection data from all zones. Extracts: area of infection, (x,y) location on pear, RGB color code of infection. Assigns a system-wide unique ID. Outputs to two destinations: publishes to IoT system + saves to local database.</p>
+    </div>
+
+    <!-- Speed nodes -->
+    <div class="grid-3">
+      <div class="card card-accent-teal">
+        <div class="card-title">Node · Belt Speed</div>
+        <h3><span class="tag">conv1_speed</span></h3>
+        <p>Counts belt encoder pulses. Multiplies by 175 cm. Publishes Conv1 actual speed to speed pipeline.</p>
+      </div>
+      <div class="card card-accent-teal">
+        <div class="card-title">Node · Belt Speed</div>
+        <h3><span class="tag">conv2_speed</span></h3>
+        <p>Same method as Conv1. Multiplies by 115 cm. Publishes Conv2 actual speed to speed pipeline.</p>
+      </div>
+      <div class="card card-accent-teal">
+        <div class="card-title">Node · Servo Speed</div>
+        <h3><span class="tag">servo_speed</span></h3>
+        <p>Reads servo encoder directly. Publishes real-time servo speed as the primary feedback for the PID controller.</p>
+      </div>
+    </div>
+
+    <!-- Main speed / centroid -->
+    <div class="card card-accent-navy" style="margin:14px 0;">
+      <div class="card-title">Node · Reference Speed</div>
+      <h3><span class="tag">main_speed</span> → <span class="tag">centroid_time_speed</span></h3>
+      <p>Detects pear centroids, tracks them across frames, computes per-pear velocity, averages all moving pears, and publishes the reference speed. This is the setpoint for the PID controller. Also sends servo feedback to the servo PID loop.</p>
+    </div>
+
+    <!-- Speed publisher -->
+    <div class="card card-accent-amber" style="margin-bottom:14px;">
+      <div class="card-title">Node · Speed Publisher (to PLC)</div>
+      <h3><span class="tag">speed_publisher</span></h3>
+      <p>The final speed node. Collects Conv1, Conv2, and Servo speeds → runs PID error computation → converts to PWM → sends through Low Pass Filters → outputs 0–3.3 V to the PLC for all three motors.</p>
+    </div>
+
+    <!-- Area / Volume / Mass -->
+    <div class="grid-3">
+      <div class="card card-accent-navy">
+        <div class="card-title">Nodes · Area × 6</div>
+        <h3><span class="tag">A1_area_node</span>…<span class="tag">B3_area_node</span></h3>
+        <p>Compute the 2D surface area of each pear from the segmented silhouette image. Published to volume and IoT topics.</p>
+      </div>
+      <div class="card card-accent-navy">
+        <div class="card-title">Node · Volume</div>
+        <h3><span class="tag">volume_estimation</span></h3>
+        <p>Uses depth data + 2D area to estimate the 3D volume of each pear. Publishes to IoT.</p>
+      </div>
+      <div class="card card-accent-navy">
+        <div class="card-title">Node · Mass</div>
+        <h3><span class="tag">mass_estimation</span></h3>
+        <p>Estimates pear mass from volume (using density model). Publishes to IoT and database.</p>
+      </div>
+    </div>
+
+    <!-- Database / Web -->
+    <div class="grid-2" style="margin-top:14px;">
+      <div class="card card-accent-green">
+        <div class="card-title">Node · Persistence</div>
+        <h3><span class="tag">data_collection_node</span> (Database)</h3>
+        <p>Receives data from all 6 data-collector nodes. Processes A1 first, then A2…B3, then repeats. For each: assigns ID, writes all fields, moves to next zone. Also publishes to the database web page.</p>
+      </div>
+      <div class="card card-accent-green">
+        <div class="card-title">Node · IoT Web Publisher</div>
+        <h3><span class="tag">webpage_publisher_status</span></h3>
+        <p>Publishes live system status to the IoT overview web page. Broadcasts: motor status array, accepted/rejected counts, and all per-pear fields listed in the IoT schema.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SECTION 12 ══ -->
+  <section id="s12">
+    <div class="section-label">Section 12 · Data Flow</div>
+    <div class="section-title">All ROS2 Topics</div>
+    <p class="section-desc">Every named data stream (topic) in the system. Topics carry data between nodes.</p>
+    <hr class="div"/>
+
+    <div class="importance-bar">
+      <div class="importance-dots">
+        <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="off"></span>
+      </div>
+      <span class="importance-label">Importance Level 4/5</span>
+    </div>
+
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Topic Name</th>
+          <th>Publisher</th>
+          <th>Subscriber(s)</th>
+          <th>Payload</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>/frame</td><td>Camera</td><td>frame_capture</td><td>Raw RGB-D frame</td></tr>
+        <tr><td>/frame_arrays [A1–B3]</td><td>frame_divider</td><td>A1_vision … B3_vision</td><td>Zone sub-frame images</td></tr>
+        <tr><td>/A1_frame … /B3_frame</td><td>frame_speed_divider</td><td>Speed nodes, PID</td><td>Sub-frame for speed computation</td></tr>
+        <tr><td>/infection_detection</td><td>A1_vision … B3_vision</td><td>infection_description, A1_action…</td><td>Location, area, color, action, status</td></tr>
+        <tr><td>/infection_description</td><td>infection_description</td><td>IoT publisher, local DB</td><td>Area, location, RGB code, ID</td></tr>
+        <tr><td>/A1_action … /B3_action</td><td>A1_action … B3_action</td><td>Physical actuator / PLC</td><td>Accept / Reject command</td></tr>
+        <tr><td>/A1_data … /B3_data</td><td>A1_data_collector … B3</td><td>data_collection_node</td><td>ID, color, area, location, surface area</td></tr>
+        <tr><td>/main_speed</td><td>main_speed (centroid tracker)</td><td>speed_publisher, servo_feedback</td><td>Reference speed (m/s)</td></tr>
+        <tr><td>/conv1_speed_feedback</td><td>conv1_speed</td><td>speed_publisher (PID)</td><td>Actual Conv1 speed</td></tr>
+        <tr><td>/conv2_speed_feedback</td><td>conv2_speed</td><td>speed_publisher (PID)</td><td>Actual Conv2 speed</td></tr>
+        <tr><td>/servo_feedback</td><td>servo_speed</td><td>speed_publisher (PID)</td><td>Actual servo speed (RPM)</td></tr>
+        <tr><td>/publish_speed</td><td>centroid_time_speed</td><td>IoT, speed_publisher</td><td>Computed reference speed</td></tr>
+        <tr><td>/speed_to_plc</td><td>speed_publisher</td><td>PLC (hardware)</td><td>PWM signal → LPF → 0–3.3 V</td></tr>
+        <tr><td>/area_volume_mass</td><td>area/volume/mass nodes</td><td>IoT, data_collection_node</td><td>Surface area, volume, mass per pear</td></tr>
+        <tr><td>/iot_overview</td><td>webpage_publisher_status</td><td>IoT cloud system</td><td>All 13 IoT fields (see Section 13)</td></tr>
+        <tr><td>/motors_status</td><td>data_collection_node</td><td>IoT, web page</td><td>Array[6]- motor states</td></tr>
+        <tr><td>/web_page_publisher_status</td><td>data_collection_node</td><td>Status web page</td><td>Motor status, accepted, rejected</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ══ SECTION 13 ══ -->
+  <section id="s13">
+    <div class="section-label">Section 13 · IoT Schema</div>
+    <div class="section-title">IoT Publishing- 13 Data Fields</div>
+    <p class="section-desc">Published to the IoT cloud system at 0.1 Hz update rate (every 10 seconds). Displayed on the system overview web page. All pear-level fields are keyed by Pear ID.</p>
+    <hr class="div"/>
+
+    <div class="importance-bar">
+      <div class="importance-dots">
+        <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="off"></span>
+      </div>
+      <span class="importance-label">Importance Level 4/5</span>
+    </div>
+
+    <div class="card" style="padding:0; overflow:hidden;">
+      <div class="iot-field" style="background:var(--navy);color:#fff;">
+        <span style="color:#8EAFC7;">#</span>
+        <span style="font-weight:700;font-size:12px;color:var(--teal);">Field Name</span>
+        <span style="font-weight:700;font-size:12px;">Description</span>
+        <span style="font-weight:700;font-size:12px;">Type</span>
+      </div>
+      <div class="iot-field"><div class="iot-num">01</div><div class="iot-name">motors_status</div><div class="iot-desc">Status of all 6 motors (conveyors, servo, actuators). Updated continuously.</div><div class="iot-type"><span class="tag">Array[6]</span></div></div>
+      <div class="iot-field"><div class="iot-num">02</div><div class="iot-name">batch_rejections</div><div class="iot-desc">Total number of pears rejected in the current batch run.</div><div class="iot-type"><span class="tag">Int</span></div></div>
+      <div class="iot-field"><div class="iot-num">03</div><div class="iot-name">batch_accepted</div><div class="iot-desc">Total number of pears accepted (passed quality check) in the current batch.</div><div class="iot-type"><span class="tag">Int</span></div></div>
+      <div class="iot-field"><div class="iot-num">04</div><div class="iot-name">pear_id</div><div class="iot-desc">Unique identifier assigned to each pear. Format: ZoneID + sequential number (e.g., A1_00001).</div><div class="iot-type"><span class="tag">String</span></div></div>
+      <div class="iot-field"><div class="iot-num">05</div><div class="iot-name">pear_status</div><div class="iot-desc">Per-pear outcome: Accepted or Rejected based on infection analysis.</div><div class="iot-type"><span class="tag">Enum</span></div></div>
+      <div class="iot-field"><div class="iot-num">06</div><div class="iot-name">infection_area</div><div class="iot-desc">Size of the detected infection region in pixels² (or cm² after calibration).</div><div class="iot-type"><span class="tag">Float</span></div></div>
+      <div class="iot-field"><div class="iot-num">07</div><div class="iot-name">infection_location</div><div class="iot-desc">Centroid (x, y) coordinates of the infection on the pear surface.</div><div class="iot-type"><span class="tag">(x,y)</span></div></div>
+      <div class="iot-field"><div class="iot-num">08</div><div class="iot-name">infection_color</div><div class="iot-desc">RGB color code of the infected tissue (used for classification and reporting).</div><div class="iot-type"><span class="tag">RGB</span></div></div>
+      <div class="iot-field"><div class="iot-num">09</div><div class="iot-name">pear_surface_area</div><div class="iot-desc">Total 2D surface area of the pear visible to the camera (from contour analysis).</div><div class="iot-type"><span class="tag">Float</span></div></div>
+      <div class="iot-field"><div class="iot-num">10</div><div class="iot-name">pear_volume</div><div class="iot-desc">Estimated 3D volume of the pear computed from depth camera data.</div><div class="iot-type"><span class="tag">Float</span></div></div>
+      <div class="iot-field"><div class="iot-num">11</div><div class="iot-name">pear_mass</div><div class="iot-desc">Estimated mass of the pear derived from volume using a density model.</div><div class="iot-type"><span class="tag">Float</span></div></div>
+      <div class="iot-field"><div class="iot-num">12</div><div class="iot-name">pear_category</div><div class="iot-desc">Size classification: "Small" or "Big"- determined from surface area / volume thresholds.</div><div class="iot-type"><span class="tag tag-amber">Enum</span></div></div>
+      <div class="iot-field"><div class="iot-num">13</div><div class="iot-name">completed_packages</div><div class="iot-desc">Total number of fully packaged and completed product batches sent downstream.</div><div class="iot-type"><span class="tag tag-green">Int</span></div></div>
+    </div>
+    <div class="callout" style="margin-top:14px;">
+      <strong>Update rate:</strong> IoT fields are published at <strong>0.1 Hz</strong> (every 10 seconds) for the overview page. The database is updated in real-time per pear. IoT data is also stored locally and uploaded after a system shutdown if the connection was previously offline.
+    </div>
+  </section>
+
+  <!-- ══ SECTION 14 ══ -->
+  <section id="s14">
+    <div class="section-label">Section 14 · Data Persistence</div>
+    <div class="section-title">Database Architecture</div>
+    <p class="section-desc">The local database is populated sequentially through all 6 zones, repeating continuously as long as the belt runs.</p>
+    <hr class="div"/>
+
+    <div class="importance-bar">
+      <div class="importance-dots">
+        <span class="on"></span><span class="on"></span><span class="on"></span><span class="off"></span><span class="off"></span>
+      </div>
+      <span class="importance-label">Importance Level 3/5</span>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="code-block"><span class="cm">/* Database write sequence */</span>
+
+<span class="gn">Loop forever:</span>
+  Read A1 data  → Assign ID: <span class="hl">A1_0001</span>
+                  Write all fields
+  Read A2 data  → Assign ID: <span class="hl">A2_0001</span>
+                  Write all fields
+  Read A3 data  → ...
+  Read B1 data  → ...
+  Read B2 data  → ...
+  Read B3 data  → Assign ID: <span class="hl">B3_0001</span>
+                  Write all fields
+  <span class="gn">→ Loop back to A1</span>
+
+<span class="cm">/* Increments per zone */</span>
+Next cycle: A1_0002, A2_0002 … B3_0002</div>
+      </div>
+      <div>
+        <div class="card card-accent-green">
+          <div class="card-title">Database Sources</div>
+          <h3>What is recorded</h3>
+          <p>Receives topic data from all A1–B3 analysis nodes. Stores: Pear ID, infection color, infection area, infection location, surface area, volume, mass, category, accept/reject status.</p>
+        </div>
+        <div class="card card-accent-green" style="margin-top:12px;">
+          <div class="card-title">Database Outputs</div>
+          <h3>Publish destinations</h3>
+          <p>1. Publishes records to the database web page (live table view).<br/>
+          2. Publishes to the local file-based database.<br/>
+          3. Infection samples saved locally and synced to IoT after system shutdown when back online.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SECTION 15 ══ -->
+  <section id="s15">
+    <div class="section-label">Section 15 · User Interfaces</div>
+    <div class="section-title">The Two Web Pages</div>
+    <p class="section-desc">The Jetson Nano hosts and publishes two web pages accessible via the network. These are the human-facing interfaces of the system.</p>
+    <hr class="div"/>
+
+    <div class="importance-bar">
+      <div class="importance-dots">
+        <span class="on"></span><span class="on"></span><span class="on"></span><span class="off"></span><span class="off"></span>
+      </div>
+      <span class="importance-label">Importance Level 3/5</span>
+    </div>
+
+    <div class="grid-2">
+      <div class="card card-accent-amber">
+        <div class="card-title">Web Page 1- Overview / Status</div>
+        <h3>System Status Page</h3>
+        <p>Published by: <span class="tag">webpage_publisher_status</span><br/>
+        Contents:<br/>
+        • All 6 motor statuses (live Array[6])<br/>
+        • Total accepted pears this batch<br/>
+        • Total rejected pears this batch<br/>
+        • Per-pear IoT fields (13 fields listed in Section 13)<br/>
+        • Updated at 0.1 Hz rate</p>
+      </div>
+      <div class="card card-accent-green">
+        <div class="card-title">Web Page 2- Database</div>
+        <h3>Database / Records Page</h3>
+        <p>Published by: <span class="tag">data_collection_node</span><br/>
+        Contents:<br/>
+        • Full pear-by-pear inspection records table<br/>
+        • Pear ID, infection data, area, volume, mass, category<br/>
+        • Sequential records starting from A1_0001<br/>
+        • Locally stored; synced to cloud after shutdown</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SECTION 16 ══ -->
+  <section id="s16">
+    <div class="section-label">Section 16 · Big Picture</div>
+    <div class="section-title">Full System Pipeline- End to End</div>
+    <p class="section-desc">Complete data flow from camera input to physical output (PLC), IoT publishing, and database storage.</p>
+    <hr class="div"/>
+
+    <div class="importance-bar">
+      <div class="importance-dots">
+        <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span>
+      </div>
+      <span class="importance-label">Importance Level 5/5</span>
+    </div>
+
+    <div class="pipeline">
+      <div class="pipeline-title">System Data Flow</div>
+
+      <div class="pipe-row">
+        <div class="pipe-node hl">📷 Camera</div>
+        <div class="pipe-arr">→</div>
+        <div class="pipe-node hl">frame_capture</div>
+      </div>
+      <div class="pipe-row" style="margin-left:20px;">
+        <div class="pipe-arr">↙</div><div class="pipe-node">frame_divider</div>
+        <div class="pipe-arr">·</div><div class="pipe-node">frame_speed_divider</div>
+        <div class="pipe-arr">·</div><div class="pipe-node">volume_divider</div>
+      </div>
+
+      <div style="border-left:2px solid rgba(0,180,216,.4); margin:12px 0 12px 12px; padding:12px 18px;">
+        <div class="pipe-row">
+          <div class="pipe-node amber-hl">🔬 Vision Nodes × 6</div>
+          <div class="pipe-arr">→</div>
+          <div class="pipe-node">A1_vision … B3_vision</div>
+          <div class="pipe-sub">(9-step CV pipeline per zone)</div>
+        </div>
+        <div class="pipe-row" style="margin-left:20px;">
+          <div class="pipe-arr">↓</div>
+          <div class="pipe-node">Infection detected → infection_description → IoT + Local DB</div>
+        </div>
+        <div class="pipe-row" style="margin-left:20px;">
+          <div class="pipe-arr">↓</div>
+          <div class="pipe-node">A1_action…B3_action → 🦾 Actuator (Accept / Reject)</div>
+        </div>
+        <div class="pipe-row" style="margin-left:20px;">
+          <div class="pipe-arr">↓</div>
+          <div class="pipe-node">A1_data_collector…B3 → data_collection_node → DB + Web Page 2</div>
+        </div>
+      </div>
+
+      <div style="border-left:2px solid rgba(255,183,3,.4); margin:12px 0 12px 12px; padding:12px 18px;">
+        <div class="pipe-row">
+          <div class="pipe-node amber-hl">⚡ Speed Pipeline</div>
+        </div>
+        <div class="pipe-row" style="margin-left:20px;">
+          <div class="pipe-node">main_speed (centroid tracker)</div>
+          <div class="pipe-arr">→</div>
+          <div class="pipe-node">centroid_time_speed</div>
+          <div class="pipe-arr">→</div>
+          <div class="pipe-node">Reference Speed</div>
+        </div>
+        <div class="pipe-row" style="margin-left:20px;">
+          <div class="pipe-node">conv1_speed · conv2_speed · servo_speed</div>
+          <div class="pipe-arr">→</div>
+          <div class="pipe-node">speed_publisher (PID)</div>
+        </div>
+        <div class="pipe-row" style="margin-left:20px;">
+          <div class="pipe-arr">↓</div>
+          <div class="pipe-node">PWM → Low Pass Filter (Conv1, Conv2)</div>
+          <div class="pipe-arr">→</div>
+          <div class="pipe-node">🏭 PLC (0–3.3 V)</div>
+        </div>
+      </div>
+
+      <div style="border-left:2px solid rgba(45,198,83,.4); margin:12px 0 12px 12px; padding:12px 18px;">
+        <div class="pipe-row">
+          <div class="pipe-node amber-hl">📐 Volume / Mass</div>
+        </div>
+        <div class="pipe-row" style="margin-left:20px;">
+          <div class="pipe-node">volume_divider → A1…B3_area_node → volume_estimation → mass_estimation</div>
+        </div>
+        <div class="pipe-row" style="margin-left:20px;">
+          <div class="pipe-arr">↓</div>
+          <div class="pipe-node">→ IoT (field 10, 11, 12)</div>
+        </div>
+      </div>
+
+      <div style="border-left:2px solid rgba(100,150,220,.4); margin:12px 0 12px 12px; padding:12px 18px;">
+        <div class="pipe-row">
+          <div class="pipe-node amber-hl">🌐 IoT / Web Output</div>
+        </div>
+        <div class="pipe-row" style="margin-left:20px;">
+          <div class="pipe-node">webpage_publisher_status → Web Page 1 (Overview)</div>
+        </div>
+        <div class="pipe-row" style="margin-left:20px;">
+          <div class="pipe-node">data_collection_node → Web Page 2 (Database)</div>
+        </div>
+        <div class="pipe-row" style="margin-left:20px;">
+          <div class="pipe-node">All data → Local DB → Cloud IoT (after shutdown / online)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SECTION 17 ══ -->
+  <section id="s17">
+    <div class="section-label">Section 17 · MOST IMPORTANT</div>
+    <div class="section-title">Critical System Requirements &amp; Notes</div>
+    <p class="section-desc">These constraints define the fundamental operational boundaries of the entire system. Missing any one of them will cause system failure.</p>
+    <hr class="div"/>
+
+    <div class="importance-bar">
+      <div class="importance-dots">
+        <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span>
+      </div>
+      <span class="importance-label">Importance Level 5/5- READ FIRST</span>
+    </div>
+
+    <div class="critical">
+      <div class="critical-head">
+        <div class="critical-icon">⚠</div>
+        <h3>Non-Negotiable System Constraints</h3>
+      </div>
+      <ul>
+        <li><strong style="color:#fff;">1-Second Action Cycle- VERY VERY IMPORTANT.</strong>&nbsp; The system must take a complete vision + detection + action decision every 1 second. This is the fundamental timing constraint for belt speed, node scheduling, PID update rate, and actuator response. Every node must complete its processing within this window. Missing this cycle means a pear passes through without inspection.</li>
+        <li><strong style="color:#fff;">PWM-to-Voltage via Low Pass Filter- mandatory hardware.</strong>&nbsp; The Jetson Nano outputs digital PWM; the PLC requires smooth analog 0–3.3 V. Without the Low Pass Filters on both Conv1 and Conv2 channels, the PLC will receive a pulsing digital signal and behave erratically or fail.</li>
+        <li><strong style="color:#fff;">Conv1 + Conv2 speeds must always sum to 3.3 V.</strong>&nbsp; The dual-conveyor balance rule is a system invariant. Violating it by independently setting both speeds will overload one side or starve the other, causing pear pile-ups or gaps.</li>
+        <li><strong style="color:#fff;">Maximum 6 pears in the vision zone simultaneously.</strong>&nbsp; If the reference speed algorithm detects &gt;6 pears, it automatically switches to overflow mode (Conv1 → 0, Conv2 → 3.3). This is a hard capacity limit that must not be bypassed by adjusting belt speeds manually.</li>
+        <li><strong style="color:#fff;">IoT data persists offline and syncs on reconnect.</strong>&nbsp; Infection samples and status data are saved locally at all times. After a system shutdown and restart with internet access, all locally buffered data is uploaded to the cloud. This means no inspection data is lost during offline periods.</li>
+        <li><strong style="color:#fff;">classical_vision_initialization must run before any vision nodes.</strong>&nbsp; All 6 vision nodes depend on system parameters published by this node. Starting vision nodes before initialization completes will cause them to run with undefined parameters.</li>
+        <li><strong style="color:#fff;">Database writes are sequential (A1 → A2 → … → B3 → repeat).</strong>&nbsp; The data_collection_node processes zones in strict order. Any disruption to this sequence causes ID assignment errors (duplicate IDs or gaps).</li>
+      </ul>
+    </div>
+
+    <div class="grid-2" style="margin-top:16px;">
+      <div class="callout red">
+        <strong>Deliverables to be provided externally:</strong><br/>
+        1. Vision algorithm code (9-step pipeline implementation)<br/>
+        2. Speed detector algorithm (centroid tracker)<br/>
+        3. PWM-to-voltage algorithm (with LPF specs)<br/>
+        4. The frame images (calibration frames)<br/>
+        5. Shape/layout of both web pages (UI templates)<br/>
+        6. Full system architecture diagram
+      </div>
+      <div class="callout">
+        <strong>Conveyor state summary:</strong><br/>
+        <span class="tag">EMPTY</span> Conv1 = 3.3 V, Conv2 = 0 V → pull pears in<br/>
+        <span class="tag tag-amber">NORMAL</span> Conv1 + Conv2 = 3.3 V, Conv2 = S_Ref<br/>
+        <span class="tag tag-red">CROWDED</span> Conv1 = 0 V, Conv2 = 3.3 V → clear queue<br/>
+        Minimum voltage in all states: 0.1 V (not 0 V)
+      </div>
+    </div>
+  </section>
+
+  <div style="text-align:center; padding:40px 0 10px; color:var(--muted); font-size:12px; border-top:1px solid var(--border);">
+    Robotics System Technical Report · All information extracted from original system design document · For internal supervisor review
+  </div>
+
+</div>
+</body>
+</html>
