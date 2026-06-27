@@ -1031,17 +1031,6 @@ sqlite> SELECT pear_status, COUNT(*) FROM pear_records GROUP BY pear_status;
 sqlite> .quit
 ```
 
----
-
-## 👥 Team
-
-**SAAT — Assiut University Graduation Project 2026**
-
-> *Developed as both an academic graduation project and the technical foundation
-> for an Agri-Tech startup targeting Egyptian SME packhouses.*
-
----
-
 <div align="center">
 
 **Built with ROS2 Foxy · OpenCV · Intel RealSense · NVIDIA Jetson Nano**
